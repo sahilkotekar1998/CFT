@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Create AWS Resources"
+
+Resources:
+  WorkflowJob:
+    Type: AWS::Glue::Workflow
+    Properties:
+      Description: Create workflow
+      MaxConcurrentRuns: 1
+      Name: grp03workflow
+
+  GlueJobImport:
+    Type: AWS::Glue::Job
+    Properties:
+      Name: data-cleaning
+      Description: Ingests data from s3 and rds, then writes it as a csv file to the data lake
+      ExecutionClass: FLEX
+      GlueVersion: 4.0
+      MaxRetries: 0
+      NumberOfWorkers: 10
+      Role: arn:aws:iam::773943758587:role/LabRole
+      Timeout: 2880
+      WorkerType: G.1X
+      Command:
+        Name: glueetl
+        ScriptLocation: s3://final-inputs/script.py
+      DefaultArguments:
+        "--job-bookmark-option": "job-bookmark-enable"
+
+    
+  WorkflowStartTrigger:
+    Type: AWS::Glue::Trigger
+    Properties:
+      Name: StartTrigger
+      Type: ON_DEMAND
+      Description: Trigger for starting the workflow
+      Actions:
+        - JobName: !Ref GlueJobImport
+      WorkflowName: !Ref WorkflowJob
