@@ -14,7 +14,7 @@ Resources:
   IngestionGlueJob:
     Type: AWS::Glue::Job
     Properties:
-      Name: Data_Cleaning
+      Name: Data_Cleaning1
       Role: arn:aws:iam::727618902243:role/LabRole
       GlueVersion: 4.0
       NumberOfWorkers: 10
