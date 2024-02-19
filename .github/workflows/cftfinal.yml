@@ -150,17 +150,17 @@ Resources:
     Properties:
       BucketName: cleaned-s3-cleaned-data
 
-  BucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      Bucket: !Ref DestinationBucket
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: "Allow"
-            Principal: "*"
-            Action: "s3:*"
-            Resource: !Join ["", ["arn:aws:s3:::", !Ref DestinationBucket, "/*"]]
+  # BucketPolicy:
+  #   Type: AWS::S3::BucketPolicy
+  #   Properties:
+  #     Bucket: !Ref DestinationBucket
+  #     PolicyDocument:
+  #       Version: "2012-10-17"
+  #       Statement:
+  #         - Effect: "Allow"
+  #           Principal: "*"
+  #           Action: "s3:*"
+  #           Resource: !Join ["", ["arn:aws:s3:::", !Ref DestinationBucket, "/*"]]
 
   IngestionGlueJob:
     Type: AWS::Glue::Job
