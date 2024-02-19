@@ -50,7 +50,7 @@ Resources:
     Properties:
       Description: ETL Job
       MaxConcurrentRuns: 1
-      Name: data-workflow
+      Name: data-workflow-grp3
 
   GlueTriggerImport:
     Type: AWS::Glue::Trigger
