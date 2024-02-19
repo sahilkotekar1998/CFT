@@ -63,7 +63,7 @@ Resources:
       Description: Triggers the Import Jobs
       Name: gluetriggerimport
       Type: EVENT
-      WorkflowName: data-workflow
+      WorkflowName: data-workflow-grp3
 
   # GlueTriggerTransform:
   #   Type: AWS::Glue::Trigger
