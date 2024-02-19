@@ -18,7 +18,7 @@ jobs:
       - name: Deploy CloudFormation Stack
         run: |
           aws cloudformation deploy \
-            --stack-name my_new_stack \
+            --stack-name mynewstack \
             --template-file .github/workflows/cftfinal.yml \
             --capabilities CAPABILITY_NAMED_IAM
         env:
