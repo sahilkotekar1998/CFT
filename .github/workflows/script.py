@@ -173,7 +173,7 @@ AmazonS3_node1707979552466 = glueContext.write_dynamic_frame.from_options(
     connection_type="s3",
     format="glueparquet",
     connection_options={
-        "path": "s3://cashflow-clarity/cleaned_csv/",
+        "path": "s3://cleaned-s3-cleaned-data",
         "partitionKeys": [],
     },
     format_options={"compression": "uncompressed"},
