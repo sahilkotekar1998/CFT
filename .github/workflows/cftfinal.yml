@@ -219,3 +219,6 @@ Resources:
         S3Targets:
           - Path: s3://cleaned-s3-cleaned-data
       Role: arn:aws:iam::727618902243:role/LabRole
+
+
+      #efsrg
