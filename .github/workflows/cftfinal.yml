@@ -1,56 +1,56 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
 Resources: 
-  SourceBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: nycgroup05datalake
+#   SourceBucket:
+#     Type: AWS::S3::Bucket
+#     Properties:
+#       BucketName: s3-splitted-data
 
   DestinationBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: nycgroup05datawarehouse
+      BucketName: cleaned-s3-cleaned-data
 
   IngestionGlueJob:
     Type: AWS::Glue::Job
     Properties:
-      Name: nyc-ingestion
-      Role: arn:aws:iam::314119374691:role/LabRole
+      Name: Data_Cleaning
+      Role: arn:aws:iam::727618902243:role/LabRole
       GlueVersion: 4.0
-      NumberOfWorkers: 5
-      Timeout: 120
+      NumberOfWorkers: 10
+      Timeout: 2880
       WorkerType: G.1X
       Command:
         Name: glueetl
-        ScriptLocation: s3://scriptsgroup-5/injesion.py
+        ScriptLocation: s3://script-grp-3/glue_script.py
       DefaultArguments:
         "--job-language": "python"
       ExecutionProperty:
         MaxConcurrentRuns: 1
 
-  TransformationGlueJob:
-    Type: AWS::Glue::Job
-    Properties:
-      Name: nyc-transformation
-      Role: arn:aws:iam::314119374691:role/LabRole
-      GlueVersion: 4.0
-      NumberOfWorkers: 5
-      Timeout: 240
-      WorkerType: G.1X
-      Command:
-        Name: glueetl
-        ScriptLocation: s3://scriptsgroup-5/transformation.py
-      DefaultArguments:
-        "--job-language": "python"
-      ExecutionProperty:
-        MaxConcurrentRuns: 1
+  # TransformationGlueJob:
+  #   Type: AWS::Glue::Job
+  #   Properties:
+  #     Name: nyc-transformation
+  #     Role: arn:aws:iam::314119374691:role/LabRole
+  #     GlueVersion: 4.0
+  #     NumberOfWorkers: 5
+  #     Timeout: 240
+  #     WorkerType: G.1X
+  #     Command:
+  #       Name: glueetl
+  #       ScriptLocation: s3://scriptsgroup-5/transformation.py
+  #     DefaultArguments:
+  #       "--job-language": "python"
+  #     ExecutionProperty:
+  #       MaxConcurrentRuns: 1
 
   GlueWorkflow:
     Type: AWS::Glue::Workflow
     Properties:
       Description: ETL Job
       MaxConcurrentRuns: 1
-      Name: nyc-workflow
+      Name: data-workflow
 
   GlueTriggerImport:
     Type: AWS::Glue::Trigger
@@ -63,28 +63,28 @@ Resources:
       Description: Triggers the Import Jobs
       Name: gluetriggerimport
       Type: EVENT
-      WorkflowName: nyc-workflow
+      WorkflowName: data-workflow
 
-  GlueTriggerTransform:
-    Type: AWS::Glue::Trigger
-    DependsOn:
-      - GlueWorkflow
-      - TransformationGlueJob
-      - GlueTriggerImport
-    Properties:
-      Actions:
-        - JobName: !Ref TransformationGlueJob
-      Description: Triggers the transformation job
-      Name: gluetriggertransform
-      Predicate:
-        Conditions:
-          - JobName: !Ref IngestionGlueJob
-            LogicalOperator: EQUALS
-            State: SUCCEEDED
-        Logical: AND
-      Type: CONDITIONAL
-      StartOnCreation: True
-      WorkflowName: nyc-workflow
+  # GlueTriggerTransform:
+  #   Type: AWS::Glue::Trigger
+  #   DependsOn:
+  #     - GlueWorkflow
+  #     - TransformationGlueJob
+  #     - GlueTriggerImport
+  #   Properties:
+  #     Actions:
+  #       - JobName: !Ref TransformationGlueJob
+  #     Description: Triggers the transformation job
+  #     Name: gluetriggertransform
+  #     Predicate:
+  #       Conditions:
+  #         - JobName: !Ref IngestionGlueJob
+  #           LogicalOperator: EQUALS
+  #           State: SUCCEEDED
+  #       Logical: AND
+  #     Type: CONDITIONAL
+  #     StartOnCreation: True
+  #     WorkflowName: nyc-workflow
 
 
   GlueDatabase:
@@ -97,20 +97,18 @@ Resources:
   DataCrawler:
     Type: AWS::Glue::Crawler
     DependsOn:
-      - SourceBucket
+      # - SourceBucket
       - DestinationBucket
       - GlueDatabase
       - GlueWorkflow
-      - GlueTriggerTransform
+      # - GlueTriggerTransform
     Properties:
-      Name: data-crawler5
+      Name: data-crawler6
       DatabaseName: gitdatabase # Replace with your desired Glue database name
       Targets:
         S3Targets:
-          - Path: s3://nycgroup05datawarehouse # Specify the path of the bucket you want to crawl
-      Role: arn:aws:iam::314119374691:role/LabRole
+          - Path: s3://cleaned-s3-cleaned-data # Specify the path of the bucket you want to crawl
+      Role: arn:aws:iam::727618902243:role/LabRole
 
   
-
-
       
