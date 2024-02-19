@@ -107,7 +107,7 @@ Resources:
       DatabaseName: gitdatabase # Replace with your desired Glue database name
       Targets:
         S3Targets:
-          - Path: s3://cleaned-s3-cleaned-data # Specify the path of the bucket you want to crawl by the crawler
+          - Path: s3://cleaned-s3-cleaned-data # Specify the path of the bucket you want to crawl
       Role: arn:aws:iam::727618902243:role/LabRole
 
   
