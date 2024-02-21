@@ -3,11 +3,33 @@
       
 AWSTemplateFormatVersion: "2010-09-09"
 
-Resources:
-  DestinationBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: cleaned-s3-cleaned-data-1944
+# Resources:
+#   DestinationBucket:
+#     Type: AWS::S3::Bucket
+#     Properties:
+#       BucketName: cleaned-s3-cleaned-data-1944
+
+DestinationBucket:
+  Type: AWS::S3::Bucket
+  Properties:
+    BucketName: cleaned-s3-cleaned-data-1944
+  BucketPolicy:
+    Version: "2012-10-17"
+    Statement:
+      - Effect: "Allow"
+        Principal: "*"
+        Action:
+          - "s3:GetObject"
+          - "s3:PutObject"
+        Resource: "arn:aws:s3:::cleaned-s3-cleaned-data-1944/*"
+      - Effect: "Allow"
+        Principal:
+          Service: "glue.amazonaws.com"
+        Action:
+          - "s3:GetObject"
+          - "s3:PutObject"
+        Resource: "arn:aws:s3:::cleaned-s3-cleaned-data-1944/*"
+
 
 
   IngestionGlueJob:
@@ -21,7 +43,7 @@ Resources:
       WorkerType: G.1X
       Command:
         Name: glueetl
-        ScriptLocation: s3://script-for-glue-3/glue-script.py
+        ScriptLocation: s3://script-for-glue-3/glue-job-scrript.py
       DefaultArguments:
         "--job-language": "python"
       ExecutionProperty:
