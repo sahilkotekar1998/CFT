@@ -1,144 +1,4 @@
-# AWSTemplateFormatVersion: "2010-09-09"
-# #fghjk
-# # Resources: 
-# #   SourceBucket:
-# #     Type: AWS::S3::Bucket
-# #     Properties:
-# #       BucketName: s3-splitted-data
 
-#   # DestinationBucket:
-#   #   Type: AWS::S3::Bucket
-#   #   Properties:
-#   #     BucketName: cleaned-s3-cleaned-data
-#   #   BucketPolicy:
-#   #     Version: "2012-10-17"
-#   #     Statement:
-#   #       - Effect: "Allow"
-#   #         Principal: "*"
-#   #         Action:
-#   #           - "s3:GetObject"
-#   #           - "s3:PutObject"
-#   #         Resource: "arn:aws:s3:::cleaned-s3-cleaned-data/*"
-
-
-# Resources:
-#   DestinationBucket:
-#     Type: AWS::S3::Bucket
-#     Properties:
-#       BucketName: cleaned-s3-cleaned-data
-
-#   BucketPolicy:
-#     Type: AWS::S3::BucketPolicy
-#     Properties:
-#       Bucket: !Ref DestinationBucket
-#       PolicyDocument:
-#         Version: "2012-10-17"
-#         Statement:
-#           - Effect: "Allow"
-#             Principal: "*"
-#             Action: "s3:*"
-#             Resource: !Join ["", ["arn:aws:s3:::", !Ref DestinationBucket, "/*"]]
-
-
-
-#   IngestionGlueJob:
-#     Type: AWS::Glue::Job
-#     Properties:
-#       Name: Data_Cleaning1
-#       Role: arn:aws:iam::727618902243:role/LabRole
-#       GlueVersion: 4.0
-#       NumberOfWorkers: 10
-#       Timeout: 2880
-#       WorkerType: G.1X
-#       Command:
-#         Name: glueetl
-#         ScriptLocation: s3://script-grp-3/glue_script.py
-#       DefaultArguments:
-#         "--job-language": "python"
-#       ExecutionProperty:
-#         MaxConcurrentRuns: 1
-
-#   # TransformationGlueJob:
-#   #   Type: AWS::Glue::Job
-#   #   Properties:
-#   #     Name: nyc-transformation
-#   #     Role: arn:aws:iam::314119374691:role/LabRole
-#   #     GlueVersion: 4.0
-#   #     NumberOfWorkers: 5
-#   #     Timeout: 240
-#   #     WorkerType: G.1X
-#   #     Command:
-#   #       Name: glueetl
-#   #       ScriptLocation: s3://scriptsgroup-5/transformation.py
-#   #     DefaultArguments:
-#   #       "--job-language": "python"
-#   #     ExecutionProperty:
-#   #       MaxConcurrentRuns: 1
-
-#   GlueWorkflow:
-#     Type: AWS::Glue::Workflow
-#     Properties:
-#       Description: ETL Job
-#       MaxConcurrentRuns: 1
-#       Name: data-workflow-grp3
-
-#   GlueTriggerImport:
-#     Type: AWS::Glue::Trigger
-#     DependsOn:
-#       - GlueWorkflow
-#       - IngestionGlueJob
-#     Properties:
-#       Actions:
-#         - JobName: !Ref IngestionGlueJob
-#       Description: Triggers the Import Jobs
-#       Name: gluetriggerimport
-#       Type: EVENT
-#       WorkflowName: data-workflow-grp3
-
-#   # GlueTriggerTransform:
-#   #   Type: AWS::Glue::Trigger
-#   #   DependsOn:
-#   #     - GlueWorkflow
-#   #     - TransformationGlueJob
-#   #     - GlueTriggerImport
-#   #   Properties:
-#   #     Actions:
-#   #       - JobName: !Ref TransformationGlueJob
-#   #     Description: Triggers the transformation job
-#   #     Name: gluetriggertransform
-#   #     Predicate:
-#   #       Conditions:
-#   #         - JobName: !Ref IngestionGlueJob
-#   #           LogicalOperator: EQUALS
-#   #           State: SUCCEEDED
-#   #       Logical: AND
-#   #     Type: CONDITIONAL
-#   #     StartOnCreation: True
-#   #     WorkflowName: nyc-workflow
-
-
-#   GlueDatabase:
-#         Type: AWS::Glue::Database
-#         Properties:
-#             CatalogId: !Ref AWS::AccountId
-#             DatabaseInput:
-#                 Name: gitdatabase
-
-#   DataCrawler:
-#     Type: AWS::Glue::Crawler
-#     DependsOn:
-#       # - SourceBucket
-#       - DestinationBucket
-#       - GlueDatabase
-#       - GlueWorkflow
-#       # - GlueTriggerTransform
-#     Properties:
-#       Name: data-crawler6
-#       DatabaseName: gitdatabase # Replace with your desired Glue database name
-#       Targets:
-#         S3Targets:
-#           - Path: s3://cleaned-s3-cleaned-data # Specify the path of the bucket you want to crawl
-#       Role: arn:aws:iam::727618902243:role/LabRole
 
   
       
@@ -150,30 +10,19 @@ Resources:
     Properties:
       BucketName: cleaned-s3-cleaned-data
 
-  # BucketPolicy:
-  #   Type: AWS::S3::BucketPolicy
-  #   Properties:
-  #     Bucket: !Ref DestinationBucket
-  #     PolicyDocument:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         - Effect: "Allow"
-  #           Principal: "*"
-  #           Action: "s3:*"
-  #           Resource: !Join ["", ["arn:aws:s3:::", !Ref DestinationBucket, "/*"]]
 
   IngestionGlueJob:
     Type: AWS::Glue::Job
     Properties:
       Name: Data_Cleaning1
-      Role: arn:aws:iam::727618902243:role/LabRole
+      Role: arn:aws:iam::062024247186:role/LabRole
       GlueVersion: 4.0
       NumberOfWorkers: 10
       Timeout: 2880
       WorkerType: G.1X
       Command:
         Name: glueetl
-        ScriptLocation: s3://script-grp-3/glue_script.py
+        ScriptLocation: s3://script-for-glue-3/glue-script.py
       DefaultArguments:
         "--job-language": "python"
       ExecutionProperty:
@@ -218,7 +67,7 @@ Resources:
       Targets:
         S3Targets:
           - Path: s3://cleaned-s3-cleaned-data
-      Role: arn:aws:iam::727618902243:role/LabRole
+      Role: arn:aws:iam::062024247186:role/LabRole
 
 
-      #efsrg
+    
