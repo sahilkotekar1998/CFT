@@ -31,7 +31,7 @@ jobs:
 
       - name: Start glue workflow
         run: |
-          aws glue start-workflow-run --name data-workflow-grp3
+          aws glue start-workflow-run --name data-cleaning-workflow
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -41,7 +41,7 @@ jobs:
 
       - name: Start Crawler
         run: |
-          aws glue start-crawler --name data-crawler6
+          aws glue start-crawler --name data-crawler-grp3
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
