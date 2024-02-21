@@ -18,7 +18,7 @@ jobs:
       - name: Deploy CloudFormation Stack
         run: |
           aws cloudformation deploy \
-            --stack-name mynewstack \
+            --stack-name newstack1 \
             --template-file .github/workflows/cftfinal.yml \
             --capabilities CAPABILITY_NAMED_IAM
         env:
@@ -47,3 +47,5 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+
+#hbvhksfvj
