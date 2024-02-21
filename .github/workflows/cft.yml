@@ -1,6 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 #dgb
 #dgfhj
+#ubhsjv
 Resources:
 
   DestinationBucket:
@@ -22,7 +23,7 @@ Resources:
       NumberOfWorkers: 12
       Command:
         Name: glueetl
-        ScriptLocation: s3://script-for-glue-3/glue-job-scrript.py
+        ScriptLocation: s3://script-for-glue-3/glue-script.py
       DefaultArguments:
         "--job-language": "python"
       ExecutionProperty:
