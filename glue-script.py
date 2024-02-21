@@ -177,7 +177,7 @@ AmazonS3_node1708514578492 = glueContext.write_dynamic_frame.from_options(
     frame=SQLQuery_node1708514558067,
     connection_type="s3",
     format="csv",
-    connection_options={"path": "s3://cleaned-s3-cleaned-data/", "partitionKeys": []},
+    connection_options={"path": "s3://cleaned-s3-cleaned-data-1944/", "partitionKeys": []},
     transformation_ctx="AmazonS3_node1708514578492",
 )
 
