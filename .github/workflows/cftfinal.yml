@@ -8,7 +8,7 @@ Resources:
   DestinationBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: cleaned-s3-cleaned-data
+      BucketName: cleaned-s3-cleaned-data-1944
 
 
   IngestionGlueJob:
