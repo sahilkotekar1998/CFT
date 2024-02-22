@@ -17,7 +17,6 @@ def sparkUnion(glueContext, unionType, mapping, transformation_ctx) -> DynamicFr
     )
     return DynamicFrame.fromDF(result, glueContext, transformation_ctx)
 
-print("1")
 
 def sparkSqlQuery(glueContext, query, mapping, transformation_ctx) -> DynamicFrame:
     for alias, frame in mapping.items():
@@ -25,7 +24,6 @@ def sparkSqlQuery(glueContext, query, mapping, transformation_ctx) -> DynamicFra
     result = spark.sql(query)
     return DynamicFrame.fromDF(result, glueContext, transformation_ctx)
 
-print("2")
 
 args = getResolvedOptions(sys.argv, ["JOB_NAME"])
 sc = SparkContext()
@@ -34,7 +32,6 @@ spark = glueContext.spark_session
 job = Job(glueContext)
 job.init(args["JOB_NAME"], args)
 
-print("3")
 # Script generated for node Amazon S3
 AmazonS3_node1708514329558 = glueContext.create_dynamic_frame.from_options(
     format_options={
@@ -53,7 +50,6 @@ AmazonS3_node1708514329558 = glueContext.create_dynamic_frame.from_options(
     },
     transformation_ctx="AmazonS3_node1708514329558",
 )
-print("4")
 
 # Script generated for node Relational DB
 RelationalDB_node1708514135823 = glueContext.create_dynamic_frame.from_options(
@@ -66,7 +62,6 @@ RelationalDB_node1708514135823 = glueContext.create_dynamic_frame.from_options(
     transformation_ctx="RelationalDB_node1708514135823",
 )
 
-print("5")
 # Script generated for node Change Schema
 ChangeSchema_node1708514403748 = ApplyMapping.apply(
     frame=AmazonS3_node1708514329558,
@@ -84,7 +79,7 @@ ChangeSchema_node1708514403748 = ApplyMapping.apply(
     ],
     transformation_ctx="ChangeSchema_node1708514403748",
 )
-print("6")
+
 # Script generated for node Union
 Union_node1708514446788 = sparkUnion(
     glueContext,
@@ -95,25 +90,25 @@ Union_node1708514446788 = sparkUnion(
     },
     transformation_ctx="Union_node1708514446788",
 )
-print("7")
+
 # Script generated for node Change Schema
 ChangeSchema_node1708514457915 = ApplyMapping.apply(
     frame=Union_node1708514446788,
     mappings=[
         ("cust_id", "string", "cust_id", "string"),
-        ("start_date", "string", "start_date", "date"),
-        ("end_date", "string", "end_date", "date"),
+        ("start_date", "string", "start_date", "string"),
+        ("end_date", "string", "end_date", "string"),
         ("trans_id", "string", "trans_id", "string"),
-        ("date_of_trans", "string", "date_of_trans", "date"),
-        ("year", "long", "year_of_trans", "int"),
-        ("month", "long", "month_of_trans", "int"),
-        ("day", "long", "day_of_trans", "int"),
+        ("date_of_trans", "string", "date_of_trans", "string"),
+        ("year", "long", "year", "long"),
+        ("month", "long", "month", "long"),
+        ("day", "long", "day", "long"),
         ("exp_type", "string", "exp_type", "string"),
         ("amount", "double", "amount", "double"),
     ],
     transformation_ctx="ChangeSchema_node1708514457915",
 )
-print("8")
+
 # Script generated for node SQL Query
 SqlQuery1 = """
 SELECT
@@ -140,14 +135,14 @@ SQLQuery_node1708514516732 = sparkSqlQuery(
     mapping={"Cashflow_Clarity": ChangeSchema_node1708514457915},
     transformation_ctx="SQLQuery_node1708514516732",
 )
-print("9")
+
 # Script generated for node Drop Duplicates
 DropDuplicates_node1708514553017 = DynamicFrame.fromDF(
     SQLQuery_node1708514516732.toDF().dropDuplicates(),
     glueContext,
     "DropDuplicates_node1708514553017",
 )
-print("10")
+
 # Script generated for node SQL Query
 SqlQuery0 = """
 SELECT 
@@ -171,13 +166,13 @@ SQLQuery_node1708514558067 = sparkSqlQuery(
     mapping={"Cashflow_Clarity": DropDuplicates_node1708514553017},
     transformation_ctx="SQLQuery_node1708514558067",
 )
-print("11")
+
 # Script generated for node Amazon S3
 AmazonS3_node1708514578492 = glueContext.write_dynamic_frame.from_options(
     frame=SQLQuery_node1708514558067,
     connection_type="s3",
     format="csv",
-    connection_options={"path": "s3://cleaned-s3-cleaned-data-1944/", "partitionKeys": []},
+    connection_options={"path": "s3://project-cleaned-data", "partitionKeys": []},
     transformation_ctx="AmazonS3_node1708514578492",
 )
 
