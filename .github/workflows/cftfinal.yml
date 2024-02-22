@@ -108,7 +108,7 @@ Resources:
       Targets:
         S3Targets:
           - Path: s3://grp-03-simulated-data/ # Specify the path of the bucket you want to crawl
-      Role: arn:aws:iam::	062024247186:role/LabRole
+      Role: arn:aws:iam::062024247186:role/LabRole
 
 
 
