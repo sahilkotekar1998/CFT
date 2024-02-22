@@ -17,12 +17,12 @@ Resources:
       Name: ingestion-transformation
       Role: arn:aws:iam::062024247186:role/LabRole
       GlueVersion: 4.0
-      NumberOfWorkers: 5
+      NumberOfWorkers: 10
       Timeout: 120
       WorkerType: G.1X
       Command:
         Name: glueetl
-        ScriptLocation: s3://script-for-glue-3/glue-script1.py
+        ScriptLocation: s3://script-for-glue-3/glue-script.py
       DefaultArguments:
         "--job-language": "python"
       ExecutionProperty:
