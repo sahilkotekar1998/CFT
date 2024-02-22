@@ -110,6 +110,26 @@ ChangeSchema_node1708514457915 = ApplyMapping.apply(
 )
 
 # Script generated for node SQL Query
+# SqlQuery1 = """
+# SELECT
+#     CUST_ID,
+#     START_DATE,
+#     CASE
+#         WHEN LEAD(DATE_OF_TRANS, 1) OVER (PARTITION BY CUST_ID ORDER BY DATE_OF_TRANS) IS NOT NULL
+#         THEN LEAD(DATE_OF_TRANS, 1) OVER (PARTITION BY CUST_ID ORDER BY DATE_OF_TRANS)
+#         ELSE END_DATE
+#     END AS END_DATE,
+#     TRANS_ID,
+#     DATE_OF_TRANS,
+#     YEAR_OF_TRANS,
+#     MONTH_OF_TRANS,
+#     DAY_OF_TRANS,
+#     EXP_TYPE,
+#     AMOUNT
+# FROM Cashflow_Clarity
+# ORDER BY CUST_ID, DATE_OF_TRANS;
+# """
+
 SqlQuery1 = """
 SELECT
     CUST_ID,
@@ -121,14 +141,16 @@ SELECT
     END AS END_DATE,
     TRANS_ID,
     DATE_OF_TRANS,
-    YEAR_OF_TRANS,
-    MONTH_OF_TRANS,
-    DAY_OF_TRANS,
+    year AS YEAR_OF_TRANS,
+    month as MONTH_OF_TRANS,
+    day as DAY_OF_TRANS,
     EXP_TYPE,
     AMOUNT
 FROM Cashflow_Clarity
 ORDER BY CUST_ID, DATE_OF_TRANS;
 """
+
+
 SQLQuery_node1708514516732 = sparkSqlQuery(
     glueContext,
     query=SqlQuery1,
@@ -172,7 +194,7 @@ AmazonS3_node1708514578492 = glueContext.write_dynamic_frame.from_options(
     frame=SQLQuery_node1708514558067,
     connection_type="s3",
     format="csv",
-    connection_options={"path": "s3://project-cleaned-data", "partitionKeys": []},
+    connection_options={"path": "s3://grp-03-simulated-data", "partitionKeys": []},
     transformation_ctx="AmazonS3_node1708514578492",
 )
 

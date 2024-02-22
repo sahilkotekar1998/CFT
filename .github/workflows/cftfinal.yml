@@ -22,7 +22,7 @@ Resources:
       WorkerType: G.1X
       Command:
         Name: glueetl
-        ScriptLocation: s3://script-for-glue-3/script1.py
+        ScriptLocation: s3://script-for-glue-3/glue-script1.py
       DefaultArguments:
         "--job-language": "python"
       ExecutionProperty:
@@ -111,7 +111,26 @@ Resources:
       Role: arn:aws:iam::062024247186:role/LabRole
 
 
-
+  GlueTriggerForCrawler:
+      Type: AWS::Glue::Trigger
+      DependsOn:
+        - GlueTriggerImport
+      Properties:
+        Name: GlueTriggerForCrawler
+        Type: CONDITIONAL
+        Actions:
+          - CrawlerName: !Ref DataCrawler
+            NotificationProperty:
+              NotifyDelayAfter: 1
+        Predicate:
+          Conditions:
+            - JobName: !Ref IngestionGlueJob
+              LogicalOperator: EQUALS
+              State: SUCCEEDED
+          Logical: AND
+        Type: CONDITIONAL
+        StartOnCreation: True
+        WorkflowName: simulated-workflow
   
 
 
