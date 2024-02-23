@@ -1,10 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
 Resources: 
-  # SourceBucket:
-  #   Type: AWS::S3::Bucket
-  #   Properties:
-  #     BucketName: nycgroup05datalake
+
 
   DestinationBucket:
     Type: AWS::S3::Bucket
@@ -15,35 +12,19 @@ Resources:
     Type: AWS::Glue::Job
     Properties:
       Name: ingestion-transformation
-      Role: arn:aws:iam::062024247186:role/LabRole
+      Role: arn:aws:iam::727618902243:role/LabRole
       GlueVersion: 4.0
-      NumberOfWorkers: 10
-      Timeout: 120
+      NumberOfWorkers: 5
+      Timeout: 250
       WorkerType: G.1X
       Command:
         Name: glueetl
-        ScriptLocation: s3://script-for-glue-3/glue-script.py
+        ScriptLocation: s3://script-grp-3/glue-scrip-3.py
       DefaultArguments:
         "--job-language": "python"
       ExecutionProperty:
         MaxConcurrentRuns: 1
 
-  # TransformationGlueJob:
-  #   Type: AWS::Glue::Job
-  #   Properties:
-  #     Name: nyc-transformation
-  #     Role: arn:aws:iam::314119374691:role/LabRole
-  #     GlueVersion: 4.0
-  #     NumberOfWorkers: 5
-  #     Timeout: 240
-  #     WorkerType: G.1X
-  #     Command:
-  #       Name: glueetl
-  #       ScriptLocation: s3://scriptsgroup-5/transformation.py
-  #     DefaultArguments:
-  #       "--job-language": "python"
-  #     ExecutionProperty:
-  #       MaxConcurrentRuns: 1
 
   GlueWorkflow:
     Type: AWS::Glue::Workflow
@@ -65,26 +46,7 @@ Resources:
       Type: EVENT
       WorkflowName: simulated-workflow
 
-  # GlueTriggerTransform:
-  #   Type: AWS::Glue::Trigger
-  #   DependsOn:
-  #     - GlueWorkflow
-  #     - TransformationGlueJob
-  #     - GlueTriggerImport
-  #   Properties:
-  #     Actions:
-  #       - JobName: !Ref TransformationGlueJob
-  #     Description: Triggers the transformation job
-  #     Name: gluetriggertransform
-  #     Predicate:
-  #       Conditions:
-  #         - JobName: !Ref IngestionGlueJob
-  #           LogicalOperator: EQUALS
-  #           State: SUCCEEDED
-  #       Logical: AND
-  #     Type: CONDITIONAL
-  #     StartOnCreation: True
-  #     WorkflowName: nyc-workflow
+
 
 
   GlueDatabase:
@@ -97,18 +59,16 @@ Resources:
   DataCrawler:
     Type: AWS::Glue::Crawler
     DependsOn:
-      # - SourceBucket
       - DestinationBucket
       - GlueDatabase
       - GlueWorkflow
-      # - GlueTriggerTransform
     Properties:
       Name: data-crawler7
-      DatabaseName: simulated-db # Replace with your desired Glue database name
+      DatabaseName: simulated-db
       Targets:
         S3Targets:
-          - Path: s3://grp-03-simulated-data/ # Specify the path of the bucket you want to crawl
-      Role: arn:aws:iam::062024247186:role/LabRole
+          - Path: s3://grp-03-simulated-data/ 
+      Role: arn:aws:iam::727618902243:role/LabRole
 
 
   GlueTriggerForCrawler:
