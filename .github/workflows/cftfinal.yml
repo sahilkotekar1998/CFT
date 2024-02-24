@@ -12,14 +12,14 @@ Resources:
     Type: AWS::Glue::Job
     Properties:
       Name: ingestion-transformation
-      Role: arn:aws:iam::727618902243:role/LabRole
+      Role: arn:aws:iam::436625658564:role/LabRole
       GlueVersion: 4.0
-      NumberOfWorkers: 5
-      Timeout: 250
+      NumberOfWorkers: 4
+      Timeout: 80
       WorkerType: G.1X
       Command:
         Name: glueetl
-        ScriptLocation: s3://script-grp-3/glue-scrip-3.py
+        ScriptLocation: s3://glue-script-grp3/glue-scrip-3.py
       DefaultArguments:
         "--job-language": "python"
       ExecutionProperty:
@@ -68,7 +68,7 @@ Resources:
       Targets:
         S3Targets:
           - Path: s3://grp-03-simulated-data/ 
-      Role: arn:aws:iam::727618902243:role/LabRole
+      Role: arn:aws:iam::436625658564:role/LabRole
 
 
   GlueTriggerForCrawler:
