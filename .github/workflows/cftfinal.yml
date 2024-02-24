@@ -14,8 +14,8 @@ Resources:
       Name: ingestion-transformation
       Role: arn:aws:iam::436625658564:role/LabRole
       GlueVersion: 4.0
-      NumberOfWorkers: 4
-      Timeout: 80
+      NumberOfWorkers: 5
+      Timeout: 40
       WorkerType: G.1X
       Command:
         Name: glueetl
@@ -25,7 +25,7 @@ Resources:
       ExecutionProperty:
         MaxConcurrentRuns: 1
 
-
+#jnvds
   GlueWorkflow:
     Type: AWS::Glue::Workflow
     Properties:
