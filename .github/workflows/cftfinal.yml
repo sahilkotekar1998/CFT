@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-#fv
+
 Resources: 
 
 
@@ -19,7 +19,7 @@ Resources:
       WorkerType: G.1X
       Command:
         Name: glueetl
-        ScriptLocation: s3://part1-glue-script/glue-script/glue_script.py
+        ScriptLocation: s3://part1-glue-script/glue-scrip-3.py
       DefaultArguments:
         "--job-language": "python"
       ExecutionProperty:
