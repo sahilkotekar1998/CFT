@@ -12,20 +12,19 @@ Resources:
     Type: AWS::Glue::Job
     Properties:
       Name: ingestion-transformation
-      Role: arn:aws:iam::436625658564:role/LabRole
+      Role: arn:aws:iam::385117466836:role/LabRole
       GlueVersion: 4.0
-      NumberOfWorkers: 5
-      Timeout: 40
+      NumberOfWorkers: 2
+      Timeout: 10
       WorkerType: G.1X
       Command:
         Name: glueetl
-        ScriptLocation: s3://glue-script-grp3/glue-scrip-3.py
+        ScriptLocation: s3://part1-glue-script/glue-script/glue_script.py
       DefaultArguments:
         "--job-language": "python"
       ExecutionProperty:
         MaxConcurrentRuns: 1
 
-#jnvds
   GlueWorkflow:
     Type: AWS::Glue::Workflow
     Properties:
@@ -46,9 +45,6 @@ Resources:
       Type: EVENT
       WorkflowName: simulated-workflow
 
-
-
-
   GlueDatabase:
         Type: AWS::Glue::Database
         Properties:
@@ -68,7 +64,7 @@ Resources:
       Targets:
         S3Targets:
           - Path: s3://grp-03-simulated-data/ 
-      Role: arn:aws:iam::436625658564:role/LabRole
+      Role: arn:aws:iam::385117466836:role/LabRole
 
 
   GlueTriggerForCrawler:
