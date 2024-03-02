@@ -19,7 +19,7 @@ Resources:
       WorkerType: G.1X
       Command:
         Name: glueetl
-        ScriptLocation: s3://part1-glue-script/glue-scrip-3.py
+        ScriptLocation: s3://part1-glue-script/glue_script.py
       DefaultArguments:
         "--job-language": "python"
       ExecutionProperty:
