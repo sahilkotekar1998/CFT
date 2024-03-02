@@ -14,8 +14,8 @@ Resources:
       Name: ingestion-transformation
       Role: arn:aws:iam::385117466836:role/LabRole
       GlueVersion: 4.0
-      NumberOfWorkers: 4
-      Timeout: 20
+      NumberOfWorkers: 2
+      Timeout: 30
       WorkerType: G.1X
       Command:
         Name: glueetl

@@ -9,15 +9,6 @@ from awsglue import DynamicFrame
 from pyspark.sql import functions as SqlFuncs
 
 
-def sparkUnion(glueContext, unionType, mapping, transformation_ctx) -> DynamicFrame:
-    for alias, frame in mapping.items():
-        frame.toDF().createOrReplaceTempView(alias)
-    result = spark.sql(
-        "(select * from source1) UNION " + unionType + " (select * from source2)"
-    )
-    return DynamicFrame.fromDF(result, glueContext, transformation_ctx)
-
-
 def sparkSqlQuery(glueContext, query, mapping, transformation_ctx) -> DynamicFrame:
     for alias, frame in mapping.items():
         frame.toDF().createOrReplaceTempView(alias)
@@ -32,81 +23,16 @@ spark = glueContext.spark_session
 job = Job(glueContext)
 job.init(args["JOB_NAME"], args)
 
-# Script generated for node Relational DB
-RelationalDB_node1708346115675 = glueContext.create_dynamic_frame.from_options(
-    connection_type="mysql",
-    connection_options={
-        "useConnectionProperties": "true",
-        "dbtable": "Cashflow_Clarity",
-        "connectionName": "finale",
-    },
-    transformation_ctx="RelationalDB_node1708346115675",
-)
-
 # Script generated for node Amazon S3
-AmazonS3_node1708346432156 = glueContext.create_dynamic_frame.from_options(
-    format_options={
-        "quoteChar": '"',
-        "withHeader": True,
-        "separator": ",",
-        "optimizePerformance": False,
-    },
+AmazonS3_node1709379655170 = glueContext.create_dynamic_frame.from_options(
+    format_options={"quoteChar": '"', "withHeader": True, "separator": ","},
     connection_type="s3",
     format="csv",
     connection_options={
-        "paths": [
-            "s3://part1-cleaned-data/run-1708753374952-part-r-00000"
-        ],
+        "paths": ["s3://part1-cleaned-data/run-1708753374952-part-r-00000"],
         "recurse": True,
     },
-    transformation_ctx="AmazonS3_node1708346432156",
-)
-
-# Script generated for node Change Schema
-ChangeSchema_node1708346497746 = ApplyMapping.apply(
-    frame=AmazonS3_node1708346432156,
-    mappings=[
-        ("cust_id", "string", "cust_id", "string"),
-        ("start_date", "string", "start_date", "string"),
-        ("end_date", "string", "end_date", "string"),
-        ("trans_id", "string", "trans_id", "string"),
-        ("date", "string", "date_of_trans", "string"),
-        ("year", "string", "year", "long"),
-        ("month", "string", "month", "long"),
-        ("day", "string", "day", "long"),
-        ("exp_type", "string", "exp_type", "string"),
-        ("amount", "string", "amount", "double"),
-    ],
-    transformation_ctx="ChangeSchema_node1708346497746",
-)
-
-# Script generated for node Union
-Union_node1708346568945 = sparkUnion(
-    glueContext,
-    unionType="ALL",
-    mapping={
-        "source1": RelationalDB_node1708346115675,
-        "source2": ChangeSchema_node1708346497746,
-    },
-    transformation_ctx="Union_node1708346568945",
-)
-
-# Script generated for node Change Schema
-ChangeSchema_node1708346657708 = ApplyMapping.apply(
-    frame=Union_node1708346568945,
-    mappings=[
-        ("Cust_Id", "string", "Cust_Id", "string"),
-        ("Start_Date", "string", "Start_Date", "string"),
-        ("End_date", "string", "End_date", "string"),
-        ("Trans_Id", "string", "Trans_Id", "string"),
-        ("DATE_OF_TRANS", "string", "DATE_OF_TRANS", "string"),
-        ("Year", "long", "Year_of_trans", "long"),
-        ("Month", "long", "Month_of_trans", "long"),
-        ("Day", "long", "Day_of_trans", "long"),
-        ("Exp_Type", "string", "Exp_Type", "string"),
-        ("Amount", "double", "Amount", "double"),
-    ],
-    transformation_ctx="ChangeSchema_node1708346657708",
+    transformation_ctx="AmazonS3_node1709379655170",
 )
 
 # Script generated for node SQL Query
@@ -129,18 +55,18 @@ SELECT
 FROM Cashflow_Clarity
 ORDER BY CUST_ID, DATE_OF_TRANS;
 """
-SQLQuery_node1708346887114 = sparkSqlQuery(
+SQLQuery_node1709379691901 = sparkSqlQuery(
     glueContext,
     query=SqlQuery0,
-    mapping={"Cashflow_Clarity": ChangeSchema_node1708346657708},
-    transformation_ctx="SQLQuery_node1708346887114",
+    mapping={"cashflow_Clarity": AmazonS3_node1709379655170},
+    transformation_ctx="SQLQuery_node1709379691901",
 )
 
 # Script generated for node Drop Duplicates
-DropDuplicates_node1708346945282 = DynamicFrame.fromDF(
-    SQLQuery_node1708346887114.toDF().dropDuplicates(),
+DropDuplicates_node1709379733535 = DynamicFrame.fromDF(
+    SQLQuery_node1709379691901.toDF().dropDuplicates(),
     glueContext,
-    "DropDuplicates_node1708346945282",
+    "DropDuplicates_node1709379733535",
 )
 
 # Script generated for node SQL Query
@@ -160,23 +86,21 @@ SELECT
 FROM 
     Cashflow_Clarity;
 """
-SQLQuery_node1708346953868 = sparkSqlQuery(
+SQLQuery_node1709379736323 = sparkSqlQuery(
     glueContext,
     query=SqlQuery1,
-    mapping={"Cashflow_Clarity": DropDuplicates_node1708346945282},
-    transformation_ctx="SQLQuery_node1708346953868",
+    mapping={"Casflow_Clarity": DropDuplicates_node1709379733535},
+    transformation_ctx="SQLQuery_node1709379736323",
 )
 
 # Script generated for node Amazon S3
-AmazonS3_node1708347017239 = glueContext.write_dynamic_frame.from_options(
-    frame=SQLQuery_node1708346953868,
+AmazonS3_node1709379777561 = glueContext.write_dynamic_frame.from_options(
+    frame=SQLQuery_node1709379736323,
     connection_type="s3",
-    format="csv",
-    connection_options={
-        "path": "grp-03-simulated-data",
-        "partitionKeys": ["Exp_Type", "Year_of_Trans", "Month_of_Trans"],
-    },
-    transformation_ctx="AmazonS3_node1708347017239",
+    format="glueparquet",
+    connection_options={"path": "s3://grp-03-simulated-data", "partitionKeys": []},
+    format_options={"compression": "snappy"},
+    transformation_ctx="AmazonS3_node1709379777561",
 )
 
 job.commit()
