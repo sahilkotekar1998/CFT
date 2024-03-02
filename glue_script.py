@@ -8,7 +8,7 @@ from awsglue.dynamicframe import DynamicFrame
 from awsglue import DynamicFrame
 from pyspark.sql import functions as SqlFuncs
 
-#jd
+
 def sparkUnion(glueContext, unionType, mapping, transformation_ctx) -> DynamicFrame:
     for alias, frame in mapping.items():
         frame.toDF().createOrReplaceTempView(alias)
